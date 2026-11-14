@@ -27,7 +27,11 @@ Z = [-1.644854, -0.67449, 0.0, 0.67449, 1.644854]
 # normal. Stretch the outer (5% / 95%) quantiles outward; the inner ones are
 # tightened in v3. Monotone in every row because every factor is positive.
 TAIL_SCALE = 1.3
-Z_LEV = [z * TAIL_SCALE if abs(z) > 1.0 else z for z in Z]
+INNER_SCALE = 0.9
+Z_LEV = [
+    z * TAIL_SCALE if abs(z) > 1.0 else (z * INNER_SCALE if z != 0.0 else 0.0)
+    for z in Z
+]
 
 
 def price6(x: float) -> float:
