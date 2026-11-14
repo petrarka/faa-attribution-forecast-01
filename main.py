@@ -23,6 +23,12 @@ QUANTILES = [0.05, 0.25, 0.5, 0.75, 0.95]
 # Standard normal quantile at each level, to 6 decimals.
 Z = [-1.644854, -0.67449, 0.0, 0.67449, 1.644854]
 
+# Price moves are leptokurtic: fatter tails and a more peaked center than a
+# normal. Stretch the outer (5% / 95%) quantiles outward; the inner ones are
+# tightened in v3. Monotone in every row because every factor is positive.
+TAIL_SCALE = 1.3
+Z_LEV = [z * TAIL_SCALE if abs(z) > 1.0 else z for z in Z]
+
 
 def price6(x: float) -> float:
     """Clamp to [0, 1], round to 6 decimals (never -0.0)."""
@@ -67,7 +73,7 @@ def forecast(prices: list[float], horizon: int) -> list[list[float]]:
     rows: list[list[float]] = []
     for h in range(1, horizon + 1):
         spread = s * (h ** 0.45)
-        rows.append([price6(c + z * spread) for z in Z])
+        rows.append([price6(c + z * spread) for z in Z_LEV])
     return rows
 
 
