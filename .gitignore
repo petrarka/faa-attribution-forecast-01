@@ -1,0 +1,5 @@
+out/
+out2/
+__pycache__/
+opencode.json
+*.pyc
